@@ -328,14 +328,11 @@ resource "aws_iam_role_policy" "flow_log" {
     Version = "2012-10-17"
     Statement = [{
       Action = [
-        "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams",
       ]
       Effect   = "Allow"
-      Resource = aws_cloudwatch_log_group.flow_log[0].arn
+      Resource = "${aws_cloudwatch_log_group.flow_log[0].arn}:*"
     }]
   })
 }

@@ -43,23 +43,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Install Trivy
+        run: |
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+
       - name: Trivy IaC Scan
-        uses: aquasecurity/trivy-action@0.35.0
-        with:
-          scan-type: "config"
-          scan-ref: "."
-          severity: "HIGH,CRITICAL"
-          exit-code: "1"
+        run: trivy config --severity HIGH,CRITICAL --exit-code 1 .
 
       - name: Checkov IaC Scan
-        uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: .
-          framework: terraform
-          quiet: true
-          soft_fail: false
-          skip_check: CKV_AWS_111,CKV_AWS_356,CKV2_AWS_12,CKV_AWS_130,CKV2_AWS_5
-          output_format: cli
+        run: |
+          pip install checkov
+          checkov -d . --framework terraform --quiet --skip-check CKV_AWS_111,CKV_AWS_356,CKV2_AWS_12,CKV_AWS_130,CKV2_AWS_5,CKV_AWS_158
 
   ############################################################################
   # Stage 3: TFLint

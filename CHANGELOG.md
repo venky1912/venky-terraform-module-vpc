@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/venky1912/venky-terraform-module-vpc/compare/v0.1.2...v0.1.3) (2026-06-24)
+
+
+### Bug Fixes
+
+* pin provider versions to supported range ([#3](https://github.com/venky1912/venky-terraform-module-vpc/issues/3)) ([119f64a](https://github.com/venky1912/venky-terraform-module-vpc/commit/119f64a0bf80e8432ee1a6fcbb6da5635923cce2))
+
 ## [0.1.2](https://github.com/venky1912/venky-terraform-module-vpc/compare/v0.1.1...v0.1.2) (2026-06-24)
 
 

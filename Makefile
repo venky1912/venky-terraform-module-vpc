@@ -1,4 +1,4 @@
-.PHONY: init fmt validate lint docs clean
+.PHONY: init fmt validate lint scan docs plan clean all
 
 init:
 	terraform init -backend=false
@@ -11,12 +11,20 @@ validate: init
 
 lint:
 	tflint --init
-	tflint
+	tflint --format compact
+
+scan:
+	docker run --rm -v "$(PWD):/src" aquasec/tfsec /src --minimum-severity MEDIUM
+	docker run --rm -v "$(PWD):/tf" bridgecrew/checkov -d /tf --framework terraform --quiet
 
 docs:
 	terraform-docs .
 
-all: fmt validate lint docs
+plan: init
+	cd examples/complete && terraform init -backend=false && terraform validate
+
+all: fmt validate lint scan docs
 
 clean:
 	rm -rf .terraform .terraform.lock.hcl
+	rm -rf examples/complete/.terraform examples/complete/.terraform.lock.hcl

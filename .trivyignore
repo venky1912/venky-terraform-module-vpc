@@ -1,0 +1,3 @@
+# Public subnets are intentionally configured with public IPs
+# This is by design for load balancers, NAT gateways, bastion hosts
+AVD-AWS-0164

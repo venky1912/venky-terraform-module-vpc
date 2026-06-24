@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/venky1912/venky-terraform-module-vpc/compare/v0.1.1...v0.1.2) (2026-06-24)
+
+
+### Bug Fixes
+
+* improve module documentation header ([8d7915b](https://github.com/venky1912/venky-terraform-module-vpc/commit/8d7915bf64e413222e602528d2e50beaccbaa823))
+
 ## [0.1.1](https://github.com/venky1912/venky-terraform-module-vpc/compare/v0.1.0...v0.1.1) (2026-06-24)
 
 

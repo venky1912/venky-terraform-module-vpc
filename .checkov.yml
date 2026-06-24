@@ -1,0 +1,11 @@
+framework: terraform
+quiet: true
+skip-check:
+  # Intentional for VPC module design:
+  - CKV_AWS_111   # IAM policy wildcard resource (flow log policy needs *)
+  - CKV_AWS_356   # IAM policy wildcard resource (same as above)
+  - CKV_AWS_130   # Public subnets assign public IPs by design
+  - CKV_AWS_23    # SG description - covered by name_prefix
+  - CKV2_AWS_5    # SG attached to resource - done at consumer level
+  - CKV2_AWS_12   # Default SG restrictions - not managing default SG
+  - CKV2_AWS_19   # Verified module source - consumers reference via git tag

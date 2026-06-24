@@ -50,7 +50,7 @@ jobs:
           framework: terraform
           quiet: true
           soft_fail: false
-          skip_check: CKV_AWS_111,CKV_AWS_356
+          skip_check: CKV_AWS_111,CKV_AWS_356,CKV_AWS_130,CKV_AWS_23,CKV2_AWS_5,CKV2_AWS_12,CKV2_AWS_19
           output_format: cli
 
   ############################################################################

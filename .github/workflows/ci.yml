@@ -34,14 +34,22 @@ jobs:
             breaking
 
   ############################################################################
-  # Stage 2: Security Scan (Checkov)
+  # Stage 2: Security Scan (Trivy + Checkov)
   ############################################################################
   security-scan:
     name: "Stage 2: Security Scan"
     needs: [validate-pr-title]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
+
+      - name: Trivy IaC Scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: "config"
+          scan-ref: "."
+          severity: "HIGH,CRITICAL"
+          exit-code: "1"
 
       - name: Checkov IaC Scan
         uses: bridgecrewio/checkov-action@v12
@@ -61,11 +69,11 @@ jobs:
     needs: [security-scan]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: "v0.63.1"
+      - name: Install TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
       - name: Init TFLint
         run: tflint --init
@@ -81,9 +89,9 @@ jobs:
     needs: [tflint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.15.7"
 
@@ -98,9 +106,9 @@ jobs:
     needs: [terraform-fmt]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.15.7"
 
@@ -122,9 +130,9 @@ jobs:
       matrix:
         example: [complete]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.15.7"
 
@@ -136,13 +144,6 @@ jobs:
         working-directory: examples/${{ matrix.example }}
         run: terraform validate
 
-      - name: Terraform Plan (example/${{ matrix.example }})
-        working-directory: examples/${{ matrix.example }}
-        run: terraform plan -input=false -no-color
-        continue-on-error: true
-        env:
-          AWS_DEFAULT_REGION: eu-west-1
-
   ############################################################################
   # Stage 7: Docs Check
   ############################################################################
@@ -151,14 +152,26 @@ jobs:
     needs: [example-testing]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - name: terraform-docs
-        uses: terraform-docs/gh-actions@v1
-        with:
-          working-dir: .
-          output-file: README.md
-          fail-on-diff: true
+      - name: Install terraform-docs
+        run: |
+          curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.19.0/terraform-docs-v0.19.0-$(uname)-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz
+          chmod +x terraform-docs
+          mv terraform-docs /usr/local/bin/
+
+      - name: Generate docs
+        run: terraform-docs .
+
+      - name: Check for diff
+        run: |
+          if [ -n "$(git diff --name-only)" ]; then
+            echo "❌ README.md is out of date. Run 'make docs' locally."
+            git diff
+            exit 1
+          fi
+          echo "✅ Docs are up to date"
 
   ############################################################################
   # Final Gate

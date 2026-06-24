@@ -5,6 +5,8 @@ Terraform module for provisioning a production-ready, multi-AZ AWS VPC.
 
 ## Features
 
+> Secure-by-default, EKS-ready VPC module
+
 - Multi-AZ public, private, and database subnets
 - NAT Gateway (single or per-AZ for HA)
 - Internet Gateway

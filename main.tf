@@ -239,6 +239,7 @@ resource "aws_security_group" "vpc_endpoints" {
   vpc_id      = aws_vpc.this.id
 
   ingress {
+    description = "Allow HTTPS from VPC CIDR to endpoints"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"

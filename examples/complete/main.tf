@@ -17,7 +17,7 @@ module "vpc" {
   interface_endpoints      = ["ec2", "ecr.api", "ecr.dkr", "sts", "logs"]
 
   enable_flow_logs        = true
-  flow_log_retention_days = 14
+  flow_log_retention_days = 365
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = "1"

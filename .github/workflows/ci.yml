@@ -41,7 +41,7 @@ jobs:
     needs: [validate-pr-title]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Checkov IaC Scan
         uses: bridgecrewio/checkov-action@v12
@@ -50,7 +50,7 @@ jobs:
           framework: terraform
           quiet: true
           soft_fail: false
-          skip_check: CKV_AWS_111,CKV_AWS_356,CKV_AWS_130,CKV_AWS_23,CKV2_AWS_5,CKV2_AWS_12,CKV2_AWS_19
+          skip_check: CKV_AWS_111,CKV_AWS_356,CKV2_AWS_12
           output_format: cli
 
   ############################################################################
@@ -61,7 +61,7 @@ jobs:
     needs: [security-scan]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: terraform-linters/setup-tflint@v4
         with:
@@ -81,7 +81,7 @@ jobs:
     needs: [tflint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -98,7 +98,7 @@ jobs:
     needs: [terraform-fmt]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -122,7 +122,7 @@ jobs:
       matrix:
         example: [complete]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -151,7 +151,7 @@ jobs:
     needs: [example-testing]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: terraform-docs
         uses: terraform-docs/gh-actions@v1

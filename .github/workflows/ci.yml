@@ -34,7 +34,7 @@ jobs:
             breaking
 
   ############################################################################
-  # Stage 2: Security Scan (tfsec + checkov)
+  # Stage 2: Security Scan (Trivy + Checkov)
   ############################################################################
   security-scan:
     name: "Stage 2: Security Scan"
@@ -43,11 +43,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
+      - name: Trivy IaC Scan
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          soft_fail: false
-          additional_args: "--minimum-severity MEDIUM"
+          scan-type: "config"
+          scan-ref: "."
+          severity: "MEDIUM,HIGH,CRITICAL"
+          exit-code: "1"
 
       - name: Checkov
         uses: bridgecrewio/checkov-action@v12

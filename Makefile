@@ -14,7 +14,7 @@ lint:
 	tflint --format compact
 
 scan:
-	docker run --rm -v "$(PWD):/src" aquasec/tfsec /src --minimum-severity MEDIUM
+	docker run --rm -v "$(PWD):/src" aquasec/trivy config --severity MEDIUM,HIGH,CRITICAL /src
 	docker run --rm -v "$(PWD):/tf" bridgecrew/checkov -d /tf --framework terraform --quiet
 
 docs:
